@@ -1,0 +1,31 @@
+[package]
+name = "my-sol"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+solana-sdk = "1.18.11"
+solana-client = "1.18.11"
+solana-account-decoder = "1.18.11"
+spl-token = "4.0.0"
+serde_json = "1.0.116"
+spl-associated-token-account = "3.0.2"
+serde = "1.0.198"
+tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "macros"] }
+mpl-token-metadata = "4.1.2"
+dotenv = "0.15.0"
+slint = "1.6.0"
+reqwest = "0.12.4"
+notify = "6.1.1"
+image = "0.25.1"
+mime = "0.3.17"
+imageproc = "0.24.0"
+rusttype = "0.9.3"
+nalgebra = "0.32.5"
+
+
+[build-dependencies]
+slint-build = "1.5.1"
