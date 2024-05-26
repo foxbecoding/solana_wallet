@@ -124,6 +124,15 @@ pub mod wallet {
                 token_amount: account_info.get("tokenAmount").unwrap().get("uiAmountString").unwrap().to_string(),
             }
         }
+
+        pub fn display_mint_address(&self) -> (String, String) {
+            let mint = &self.parsed_account_info().mint.to_string();
+            let first_five: String = mint.chars().take(6).collect();
+            let total_chars: Vec<char> = mint.chars().collect();
+            let last_five: String = total_chars.iter().rev().take(6).rev().cloned().collect();
+
+            (first_five, last_five)
+        }
     }
 
     pub fn my_wallet(pubkey: &Pubkey, rpc_client: &RpcClient) -> Vec<WalletToken>{

@@ -62,16 +62,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                     let token_description = metadata.description.unwrap_or_else(|| "".to_string());
 
-                    let mint_address_parts = get_first_and_last_five(&parsed_account_info.mint);
+                    let mint_address_parts = &token.display_mint_address();
 
                     let token_symbol = metadata.symbol.unwrap_or_else(|| format!("{}.....{}", mint_address_parts.0, mint_address_parts.1).to_string());
 
                     let slint_token = SlintToken {
                         amount: SharedString::from(parsed_account_info.token_amount),
                         description: SharedString::from(token_description),
-                        // image: SharedString::from(token_image.path().unwrap().to_str().unwrap()),
                         image: token_image,
-                        // image: SharedString::from(metadata.image.unwrap()),
                         mint: SharedString::from(parsed_account_info.mint.to_string()),
                         name: SharedString::from(metadata.name),
                         owner: SharedString::from(parsed_account_info.owner),
@@ -91,12 +89,4 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Err(e) => println!("Couldn't read MY_VARIABLE: {}", e),
     }
     Ok(())
-}
-
-fn get_first_and_last_five(s: &str) -> (String, String) {
-    let first_five: String = s.chars().take(6).collect();
-    let total_chars: Vec<char> = s.chars().collect();
-    let last_five: String = total_chars.iter().rev().take(6).rev().cloned().collect();
-
-    (first_five, last_five)
 }
