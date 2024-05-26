@@ -1,0 +1,33 @@
+import { AppBar } from "components/AppBar.slint";
+import { BottomNav, BottomNavProps } from "components/BottomNav.slint";
+import { AppTheme } from "utils/theming.slint";
+import { Solana, Token } from "utils/structs.slint";
+import { WalletPage, WalletPageProps } from "pages/wallet.slint";
+
+export global SolanaToken {
+    in property<Solana> solana;
+}
+
+export component App inherits Window {
+    width: 375px;
+    height: 600px;
+    background: AppTheme.background;
+    no-frame: false;
+    always-on-top: true;
+    title: "Solana Wallet";
+    icon: SolanaToken.solana.image;
+    in-out property <[Token]> tokens;
+    in-out property <int> activePage: BottomNavProps.activePage;
+
+    AppBar {
+        background: WalletPageProps.is-scrolled ? AppTheme.appbar : transparent;
+        animate background {
+            duration: 250ms;
+        }
+    }
+
+    WalletPage { visible: root.activePage == self.id; solana: SolanaToken.solana; tokens: tokens; }
+
+    BottomNav {}
+
+}

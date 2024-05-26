@@ -1,0 +1,79 @@
+import { HorizontalBox, Palette } from "std-widgets.slint";
+import { AppTheme } from "../utils/theming.slint";
+import { Divider } from "Divider.slint";
+
+export global BottomNavProps{
+    in-out property <int> activePage: 1;
+}
+
+struct NavItem {
+    id: int,
+    icon: image
+}
+
+component NavButton inherits Rectangle {
+  in property <int> id;
+  in property <image> icon;
+  width: 32px;
+  height: 32px;
+  Image {
+      vertical-alignment: center;
+      padding: 8px;
+      source: icon;
+      width: 32px;
+      height: 32px;
+  }
+  states [
+      pressed when touch.pressed: {
+           root.opacity: 0.5;
+      }
+      hover when touch.has-hover: {
+          root.opacity: 0.8;
+      }
+  ]
+  touch := TouchArea {
+      clicked => {
+          BottomNavProps.activePage = id;
+      }
+      mouse-cursor: pointer;
+  }
+}
+
+export component BottomNav inherits Rectangle {
+    height: 64px;
+    width: 375px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-top: 20px;
+    y: 536px;
+    z: 1;
+    background: AppTheme.bottomNav;
+    out property <image> walletIcon: BottomNavProps.activePage == 1 ? @image-url("../assets/icons/wallet-icon-filled.svg") : @image-url("../assets/icons/wallet-icon.svg");
+    out property <image> collectiblesIcon: BottomNavProps.activePage == 2 ? @image-url("../assets/icons/grid-icon-filled.svg") : @image-url("../assets/icons/grid-icon.svg");
+    out property <image> swapIcon: BottomNavProps.activePage == 3 ? @image-url("../assets/icons/swap-icon-filled.svg") : @image-url("../assets/icons/swap-icon.svg");
+    out property <image> browserIcon: BottomNavProps.activePage == 4 ? @image-url("../assets/icons/globe-icon-filled.svg") : @image-url("../assets/icons/globe-icon.svg");
+    out property <image> settingsIcon: BottomNavProps.activePage == 5 ? @image-url("../assets/icons/settings-icon-filled.svg") : @image-url("../assets/icons/settings-icon.svg");
+    in property <[NavItem]> navItems: [
+        { id: 1, icon: walletIcon },
+        { id: 2, icon: collectiblesIcon },
+        { id: 3, icon: swapIcon },
+        { id: 4, icon: browserIcon },
+        { id: 5, icon: settingsIcon },
+    ];
+
+    callback navClicked;
+
+//    Divider {}
+
+    HorizontalLayout {
+        padding-top: 16px;
+        alignment: space-around;
+        horizontal-stretch: 1;
+        vertical-stretch: 1;
+        for item[index] in navItems: NavButton {
+            id: item.id;
+            icon: item.icon;
+        }
+    }
+}
