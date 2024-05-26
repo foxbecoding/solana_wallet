@@ -2,6 +2,7 @@ import { HorizontalBox } from "std-widgets.slint";
 
 export component AppBar inherits HorizontalBox {
     in-out property <brush> background;
+    in-out property <string> title;
     height: 64px;
     padding: 0px;
     y: 0;
@@ -10,7 +11,7 @@ export component AppBar inherits HorizontalBox {
     Rectangle {
         background: background;
         Text {
-            text: "My Wallet";
+            text: title;
             font-size: 18px;
             font-weight: 600;
         }

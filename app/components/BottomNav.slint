@@ -14,6 +14,7 @@ struct NavItem {
 component NavButton inherits Rectangle {
   in property <int> id;
   in property <image> icon;
+
   width: 32px;
   height: 32px;
   Image {
@@ -61,10 +62,6 @@ export component BottomNav inherits Rectangle {
         { id: 4, icon: browserIcon },
         { id: 5, icon: settingsIcon },
     ];
-
-    callback navClicked;
-
-//    Divider {}
 
     HorizontalLayout {
         padding-top: 16px;
