@@ -146,6 +146,7 @@ export component WalletPage inherits Rectangle {
             }
         }
         TouchArea {
+            z: -1;
             scroll-event => {
                 WalletPageProps.is-scrolled = scroll.viewport-y != 0 ? true : false;
                 return reject;
