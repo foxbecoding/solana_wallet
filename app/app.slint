@@ -3,6 +3,10 @@ import { BottomNav, BottomNavProps } from "components/BottomNav.slint";
 import { AppTheme } from "utils/theming.slint";
 import { Solana, Token } from "utils/structs.slint";
 import { WalletPage, WalletPageProps } from "pages/wallet.slint";
+import { CollectiblesPage, CollectiblesPageProps } from "pages/collectibles.slint";
+import { SwapPage, SwapPageProps } from "pages/swap.slint";
+import { ExplorerPage, ExplorerPageProps } from "pages/explorer.slint";
+import { SettingsPage, SettingsPageProps } from "pages/settings.slint";
 
 export global SolanaToken {
     in property<Solana> solana;
@@ -14,19 +18,37 @@ export component App inherits Window {
     background: AppTheme.background;
     no-frame: false;
     always-on-top: true;
-    title: "Solana Wallet";
+    title: "Solana Wallet"+" - "+setAppBarTitle();
     icon: SolanaToken.solana.image;
     in-out property <[Token]> tokens;
     in-out property <int> activePage: BottomNavProps.activePage;
+    protected pure function setAppBarTitle() -> string {
+        if (BottomNavProps.activePage == 2) {
+            return CollectiblesPageProps.title;
+        } else if (BottomNavProps.activePage == 3) {
+            return SwapPageProps.title;
+        } else if (BottomNavProps.activePage == 4) {
+            return ExplorerPageProps.title;
+        } else if (BottomNavProps.activePage == 5) {
+            return SettingsPageProps.title;
+        }
+        return WalletPageProps.title;
+    }
+    in-out property <string> appBarTitle: setAppBarTitle();
 
     AppBar {
         background: WalletPageProps.is-scrolled ? AppTheme.appbar : transparent;
+        title: appBarTitle;
         animate background {
             duration: 250ms;
         }
     }
 
     WalletPage { visible: root.activePage == self.id; solana: SolanaToken.solana; tokens: tokens; }
+    CollectiblesPage { visible: root.activePage == self.id;  }
+    SwapPage { visible: root.activePage == self.id;  }
+    ExplorerPage { visible: root.activePage == self.id;  }
+    SettingsPage { visible: root.activePage == self.id;  }
 
     BottomNav {}
 
