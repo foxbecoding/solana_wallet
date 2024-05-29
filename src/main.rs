@@ -11,7 +11,8 @@ use dotenv::dotenv;
 use std::{
     env,
     str::FromStr,
-    path::Path
+    path::Path,
+    io::Read
 };
 
 use std::rc::Rc;
@@ -31,13 +32,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let app = App::new().unwrap();
 
             let sol_token_img_path = Path::new("app/assets/token-images/solana.png");
-            let sol_token_img = Image::load_from_path(sol_token_img_path);
+            let sol_token_img = Image::load_from_path(&sol_token_img_path);
             let sol_token_img = sol_token_img.unwrap_or_else(|_| Image::load_from_path(Path::new("app/assets/token-images/default.png")).expect("Cannot load fallback image"));
 
-            let sol_bal = rpc_client.get_balance(&public_address).unwrap_or_else(|_| 0) / LAMPORTS_PER_SOL;
+            let sol_bal = rpc_client.get_balance(&public_address).unwrap_or_else(|_| 0) as f32 / LAMPORTS_PER_SOL as f32 ;
 
             let my_sol = SolToken {
-                amount: SharedString::from(sol_bal.to_string()),
+                amount: SharedString::from(format!("{:.5}", sol_bal).to_string()),
+                amount_int: sol_bal,
                 name: SharedString::from("Solana".to_string()),
                 symbol: SharedString::from("SOL".to_string()),
                 mint: SharedString::from("So11111111111111111111111111111111111111112".to_string()),
@@ -67,7 +69,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let token_symbol = metadata.symbol.unwrap_or_else(|| format!("{}.....{}", mint_address_parts.0, mint_address_parts.1).to_string());
 
                     let slint_token = SlintToken {
-                        amount: SharedString::from(parsed_account_info.token_amount),
+                        amount: SharedString::from(parsed_account_info.token_amount_string),
+                        amount_int: parsed_account_info.token_amount_int,
+                        amount_formatted: SharedString::from(parsed_account_info.token_amount_formatted),
                         description: SharedString::from(token_description),
                         image: token_image,
                         mint: SharedString::from(parsed_account_info.mint.to_string()),

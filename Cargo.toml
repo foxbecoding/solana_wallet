@@ -25,6 +25,7 @@ mime = "0.3.17"
 imageproc = "0.24.0"
 rusttype = "0.9.3"
 nalgebra = "0.32.5"
+num-format = "0.4.4"
 
 
 [build-dependencies]

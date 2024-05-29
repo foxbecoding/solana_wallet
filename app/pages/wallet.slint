@@ -77,7 +77,7 @@ export component WalletPage inherits Rectangle {
                             Image {
                                 vertical-alignment: center;
                                 source: solana.image;
-                                image-fit: cover;
+                                image-fit: contain;
                                 width: 40px;
                             }
                         }
@@ -92,10 +92,16 @@ export component WalletPage inherits Rectangle {
                             Text {
                                 font-size: 13px;
                                 horizontal-alignment: left;
-                                text: "$0.000504";
+                                text: solana.amount;
                             }
                         }
-
+                        Text {
+                            font-size: 16px;
+                            font-weight: 600;
+                            horizontal-alignment: right;
+                            vertical-alignment: center;
+                            text: "$1000";
+                        }
                     }
                 }
                 for token[index] in tokens: Rectangle {
@@ -128,20 +134,26 @@ export component WalletPage inherits Rectangle {
                                 font-size: 14px;
                                 font-weight: 700;
                                 horizontal-alignment: left;
-                                text:  index+ " " + token.name;
+                                text:  token.name;
                             }
                             Text {
                                 font-size: 13px;
                                 horizontal-alignment: left;
-                                text: "$0.000504";
+                                text: token.amount_int > 0.01 ? token.amount_formatted : "<0.01";
                             }
                         }
-
+                        Text {
+                            font-size: 14px;
+                            font-weight: 600;
+                            horizontal-alignment: right;
+                            vertical-alignment: center;
+                            text: "$1000";
+                        }
                     }
                     HorizontalLayout {
                         min-height: 48px;
                         padding: 20px;
-                        Rectangle {min-height: 48px; padding: 20px;}
+                        Rectangle { min-height: 48px; padding: 20px; }
                     }
                 }
             }

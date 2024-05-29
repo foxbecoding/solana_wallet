@@ -41,7 +41,6 @@ pub mod wallet {
             let default_file_path = "app/assets/token-images/default.png"; // default path
             let uri = "https://solana-cdn.com/cdn-cgi/image/width=40/".to_string()+&self.image.as_ref().unwrap().to_string();
             let url = Url::parse(&uri)?;
-            // let url = Url::parse(&self.image.as_ref().unwrap().to_string())?;
             let pubkey_filtered = pubkey.replace(|c: char| !c.is_alphanumeric(), "");
 
             // Send a GET request and check the response status before continuing
@@ -53,8 +52,6 @@ pub mod wallet {
             let content_type = response.headers().get(reqwest::header::CONTENT_TYPE)
                 .and_then(|value| value.to_str().ok())
                 .and_then(|value| value.parse::<Mime>().ok());
-
-            // println!("MIME: {:#?} URL: {:#?} Pubkey: {:?}", content_type.as_ref().unwrap().type_().as_str(), url, &pubkey);
 
             let ext = match content_type {
                 Some(mime) => match mime.type_().as_str() {
@@ -95,10 +92,12 @@ pub mod wallet {
     }
 
     #[derive(Debug)]
-    pub struct ParsedAccountInfo {
+    pub struct ParsedAccountInfo<'a> {
         pub mint: String,
         pub owner: String,
-        pub token_amount: String,
+        pub token_amount_int: f32,
+        pub token_amount_string: &'a str,
+        pub token_amount_formatted: String,
     }
 
     #[derive(Debug)]
@@ -118,10 +117,13 @@ pub mod wallet {
 
         pub fn parsed_account_info(&self) -> ParsedAccountInfo{
             let account_info = &self.parsed_account.parsed.get("info").unwrap();
+            let token_amount = account_info.get("tokenAmount").unwrap().get("uiAmount").unwrap().as_f64().unwrap();
             return ParsedAccountInfo {
                 mint: account_info.get("mint").unwrap().to_string(),
                 owner: account_info.get("owner").unwrap().to_string(),
-                token_amount: account_info.get("tokenAmount").unwrap().get("uiAmountString").unwrap().to_string(),
+                token_amount_int: token_amount as f32,
+                token_amount_string: account_info.get("tokenAmount").unwrap().get("uiAmountString").unwrap().as_str().unwrap(),
+                token_amount_formatted: format_token_amount(token_amount),
             }
         }
 
@@ -157,7 +159,6 @@ pub mod wallet {
                                 let parsed_account_value = &parsed_account.parsed.get("info").unwrap().get("mint").unwrap();
                                 let parsed_account_pubkey = Metadata::find_pda(&Pubkey::from_str(parsed_account_value.as_str().unwrap()).unwrap());
 
-                                // TODO: convert this to get_multiple_accounts
                                 let parsed_account_data =  rpc_client.get_account_data(&parsed_account_pubkey.0).expect("TODO: panic message");
                                 let parsed_account_metadata = Metadata::from_bytes(&parsed_account_data);
                                 let temp_meta = parsed_account_metadata.unwrap().uri;
@@ -177,5 +178,41 @@ pub mod wallet {
             }
         }
         wallet_tokens_data
+    }
+
+     fn format_token_amount(amount: f64) -> String {
+        let abs_num = amount.abs();
+        let suffixes = ["", "K", "M", "B", "T", "Q", "Qi", "S", "Sp"];
+
+        let mut counter: usize = 1;
+        let mut value: f64;
+
+        if abs_num < 1000000.0 {
+            let s = format!("{:.2}", abs_num);
+            let parts: Vec<&str> = s.split('.').collect();
+            let integral = parts[0];
+            let decimals = if parts.len() > 1 { parts[1] } else { "" };
+            let integral_with_commas: String = integral
+                .chars()
+                .rev()
+                .enumerate()
+                .map(|(i, c)| if i % 3 == 0 && i != 0 { format!(",{}", c) } else { format!("{}", c) })
+                .collect::<String>()
+                .chars()
+                .rev()
+                .collect::<String>();
+
+            return format!("{}.{}", integral_with_commas, decimals);
+        }
+
+        while counter < suffixes.len() {
+            value = abs_num / (10f64.powf(3.0 * counter as f64));
+            if value < 1000.0 {
+                return format!("{:.2}{}", value, suffixes[counter]);
+            }
+            counter += 1;
+        }
+
+        format!("{:.2}{}", abs_num / (10f64.powf(3.0 * (suffixes.len() - 1) as f64)), suffixes[suffixes.len() - 1])
     }
 }
