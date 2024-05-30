@@ -16,6 +16,7 @@ component Main inherits VerticalBox {
 export component WalletPage inherits Rectangle {
     in-out property <[Token]> tokens;
     in property <Solana> solana;
+    in-out property <int> balance;
     out property <int> id: 1;
 
      scroll := ScrollView {
@@ -40,7 +41,7 @@ export component WalletPage inherits Rectangle {
                         horizontal-alignment: center;
                         font-weight: 800;
                         font-size: 32px;
-                        text: "$2,500,000";
+                        text: "$\{balance}";
                     }
                 }
             }
@@ -85,7 +86,7 @@ export component WalletPage inherits Rectangle {
                             padding-left: 4px;
                             Text {
                                 font-size: 14px;
-                                font-weight: 700;
+                                font-weight: 800;
                                 horizontal-alignment: left;
                                 text: solana.name;
                             }
@@ -95,12 +96,19 @@ export component WalletPage inherits Rectangle {
                                 text: solana.amount;
                             }
                         }
-                        Text {
-                            font-size: 16px;
-                            font-weight: 600;
-                            horizontal-alignment: right;
-                            vertical-alignment: center;
-                            text: "$1000";
+                        VerticalLayout {
+                            Text {
+                                font-size: 16px;
+                                font-weight: 600;
+                                horizontal-alignment: right;
+                                vertical-alignment: center;
+                                text: "$\{solana.balance}";
+                            }
+                            Text {
+                                font-size: 13px;
+                                horizontal-alignment: right;
+                                text: "$\{solana.price}";
+                            }
                         }
                     }
                 }
@@ -132,7 +140,7 @@ export component WalletPage inherits Rectangle {
                             padding-left: 4px;
                             Text {
                                 font-size: 14px;
-                                font-weight: 700;
+                                font-weight: 800;
                                 horizontal-alignment: left;
                                 text:  token.name;
                             }
@@ -142,12 +150,19 @@ export component WalletPage inherits Rectangle {
                                 text: token.amount_int > 0.01 ? token.amount_formatted : "<0.01";
                             }
                         }
-                        Text {
-                            font-size: 14px;
-                            font-weight: 600;
-                            horizontal-alignment: right;
-                            vertical-alignment: center;
-                            text: "$1000";
+                        VerticalLayout {
+                            Text {
+                                font-size: 16px;
+                                font-weight: 600;
+                                horizontal-alignment: right;
+                                vertical-alignment: center;
+                                text: "$\{token.balance}";
+                            }
+                           if token.price != 0 : Text {
+                                font-size: 13px;
+                                horizontal-alignment: right;
+                                text: "$\{token.price}";
+                            }
                         }
                     }
                     HorizontalLayout {
