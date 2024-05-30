@@ -1,0 +1,184 @@
+import { VerticalBox, ScrollView  } from "std-widgets.slint";
+import { AppButton } from "../components/AppButton.slint";
+import { AppTheme } from "../../app/utils/theming.slint";
+import { Solana, Token } from "../../app/utils/structs.slint";
+
+export global WalletPageProps {
+    in-out property <bool> is-scrolled: false;
+    out property <string> title: "Wallet";
+}
+
+component Main inherits VerticalBox {
+    padding-top: 64px;
+    padding-bottom: 64px;
+}
+
+export component WalletPage inherits Rectangle {
+    in-out property <[Token]> tokens;
+    in property <Solana> solana;
+    in-out property <int> balance;
+    out property <int> id: 1;
+
+     scroll := ScrollView {
+        viewport-width: 375px;
+        vertical-stretch: 1;
+        padding-bottom: 10px;
+        Rectangle {
+            background: @radial-gradient(circle, rgba(0,120,215,0.45) 0%, rgba(0,120,215,0) 100%);
+            width: 675px;
+            height: 275px;
+            y: 0px;
+        }
+
+        Main {
+            padding-bottom: 84px;
+            Rectangle {
+                height: 120px;
+                VerticalLayout {
+                    spacing: 8px;
+                    Text {
+                        vertical-alignment: center;
+                        horizontal-alignment: center;
+                        font-weight: 800;
+                        font-size: 32px;
+                        text: "$\{balance}";
+                    }
+                }
+            }
+
+            Rectangle {
+                height: 48px;
+                HorizontalLayout {
+                    spacing: 4px;
+                    AppButton { backgroundColor: AppTheme.surface; text: "Receive"; }
+                    AppButton { backgroundColor: AppTheme.surface; text: "Send"; }
+                }
+            }
+            VerticalLayout  {
+                spacing: 8px;
+                horizontal-stretch: 1;
+                vertical-stretch: 1;
+                Rectangle {
+                    height: 60px;
+                    background: @linear-gradient(45deg, #9945FF 0%, #14F195 100%);
+                    border-radius: 9px;
+                    HorizontalLayout {
+                        spacing: 8px;
+                        padding-top: 4px;
+                        padding-bottom: 4px;
+                        padding-left: 8px;
+                        padding-right: 8px;
+                        height: 48px;
+                        Rectangle {
+                            border-radius: 100px;
+                            background: #121212;
+                            width: 40px;
+                            height: 40px;
+                            clip: true;
+                            Image {
+                                vertical-alignment: center;
+                                source: solana.image;
+                                image-fit: contain;
+                                width: 40px;
+                            }
+                        }
+                        VerticalLayout {
+                            padding-left: 4px;
+                            Text {
+                                font-size: 14px;
+                                font-weight: 800;
+                                horizontal-alignment: left;
+                                text: solana.name;
+                            }
+                            Text {
+                                font-size: 13px;
+                                horizontal-alignment: left;
+                                text: solana.amount;
+                            }
+                        }
+                        VerticalLayout {
+                            Text {
+                                font-size: 16px;
+                                font-weight: 600;
+                                horizontal-alignment: right;
+                                vertical-alignment: center;
+                                text: "$\{solana.balance}";
+                            }
+                            Text {
+                                font-size: 13px;
+                                horizontal-alignment: right;
+                                text: "$\{solana.price}";
+                            }
+                        }
+                    }
+                }
+                for token[index] in tokens: Rectangle {
+                    height: 60px;
+                    background: AppTheme.surface;
+                    border-radius: 9px;
+                    HorizontalLayout {
+                        spacing: 8px;
+                        padding-top: 4px;
+                        padding-bottom: 4px;
+                        padding-left: 8px;
+                        padding-right: 8px;
+                        height: 48px;
+                        Rectangle {
+                            border-radius: 100px;
+                            background: #121212;
+                            width: 40px;
+                            height: 40px;
+                            clip: true;
+                            Image {
+                                vertical-alignment: center;
+                                source: token.image;
+                                image-fit: cover;
+                                width: 40px;
+                            }
+                        }
+                        VerticalLayout {
+                            padding-left: 4px;
+                            Text {
+                                font-size: 14px;
+                                font-weight: 800;
+                                horizontal-alignment: left;
+                                text:  token.name;
+                            }
+                            Text {
+                                font-size: 13px;
+                                horizontal-alignment: left;
+                                text: token.amount_int > 0.01 ? token.amount_formatted : "<0.01";
+                            }
+                        }
+                        VerticalLayout {
+                            Text {
+                                font-size: 16px;
+                                font-weight: 600;
+                                horizontal-alignment: right;
+                                vertical-alignment: center;
+                                text: "$\{token.balance}";
+                            }
+                           if token.price != 0 : Text {
+                                font-size: 13px;
+                                horizontal-alignment: right;
+                                text: "$\{token.price}";
+                            }
+                        }
+                    }
+                    HorizontalLayout {
+                        min-height: 48px;
+                        padding: 20px;
+                        Rectangle { min-height: 48px; padding: 20px; }
+                    }
+                }
+            }
+        }
+        TouchArea {
+            z: -1;
+            scroll-event => {
+                WalletPageProps.is-scrolled = scroll.viewport-y != 0 ? true : false;
+                return reject;
+            }
+        }
+    }
+}

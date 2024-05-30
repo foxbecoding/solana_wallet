@@ -1,0 +1,30 @@
+import { VerticalBox, ScrollView  } from "std-widgets.slint";
+import { AppTheme } from "../../app/utils/theming.slint";
+
+export global SettingsPageProps {
+    in-out property <bool> is-scrolled: false;
+    out property <string> title: "Settings";
+}
+
+component Main inherits VerticalBox {
+    padding-top: 64px;
+    padding-bottom: 84px;
+}
+
+export component SettingsPage inherits Rectangle {
+     out property <int> id: 5;
+     scroll := ScrollView {
+        viewport-width: 375px;
+        vertical-stretch: 1;
+        padding-bottom: 10px;
+
+        Main {}
+        TouchArea {
+            z: -1;
+            scroll-event => {
+                SettingsPageProps.is-scrolled = scroll.viewport-y != 0 ? true : false;
+                return reject;
+            }
+        }
+    }
+}

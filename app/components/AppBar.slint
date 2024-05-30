@@ -1,0 +1,19 @@
+import { HorizontalBox } from "std-widgets.slint";
+
+export component AppBar inherits HorizontalBox {
+    in-out property <brush> background;
+    in-out property <string> title;
+    height: 64px;
+    padding: 0px;
+    y: 0;
+    z: 1;
+
+    Rectangle {
+        background: background;
+        Text {
+            text: title;
+            font-size: 18px;
+            font-weight: 600;
+        }
+    }
+}

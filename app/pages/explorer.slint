@@ -1,0 +1,30 @@
+import { VerticalBox, ScrollView  } from "std-widgets.slint";
+import { AppTheme } from "../../app/utils/theming.slint";
+
+export global ExplorerPageProps {
+    in-out property <bool> is-scrolled: false;
+    out property <string> title: "Explorer";
+}
+
+component Main inherits VerticalBox {
+    padding-top: 64px;
+    padding-bottom: 84px;
+}
+
+export component ExplorerPage inherits Rectangle {
+     out property <int> id: 4;
+     scroll := ScrollView {
+        viewport-width: 375px;
+        vertical-stretch: 1;
+        padding-bottom: 10px;
+
+        Main {}
+        TouchArea {
+            z: -1;
+            scroll-event => {
+                ExplorerPageProps.is-scrolled = scroll.viewport-y != 0 ? true : false;
+                return reject;
+            }
+        }
+    }
+}
