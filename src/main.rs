@@ -108,6 +108,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let balance_sum: f32 = token_balances.iter().sum();
             WalletBalance::get(&app).set_balance(format!("{:.2}", balance_sum).parse::<f32>().unwrap());
 
+            my_tokens.sort_by(|a, b| b.balance.partial_cmp(&a.balance).unwrap_or(std::cmp::Ordering::Equal));
             let the_model : Rc<VecModel<SlintToken>> = Rc::new(VecModel::from(my_tokens));
             let the_model_rc = ModelRc::from(the_model.clone());
             weak_app_start.set_tokens(the_model_rc);
