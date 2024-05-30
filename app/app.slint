@@ -12,6 +12,10 @@ export global SolanaToken {
     in property<Solana> solana;
 }
 
+export global WalletBalance {
+    in-out property <float> balance;
+}
+
 export component App inherits Window {
     width: 375px;
     height: 600px;
@@ -44,7 +48,7 @@ export component App inherits Window {
         }
     }
 
-    WalletPage { visible: root.activePage == self.id; solana: SolanaToken.solana; tokens: tokens; }
+    WalletPage { visible: root.activePage == self.id; solana: SolanaToken.solana; tokens: tokens; balance: WalletBalance.balance; }
     CollectiblesPage { visible: root.activePage == self.id;  }
     SwapPage { visible: root.activePage == self.id;  }
     ExplorerPage { visible: root.activePage == self.id;  }
