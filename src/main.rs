@@ -105,7 +105,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
 
             token_balances.push(sol_bal_value);
-            WalletBalance::get(&app).set_balance(token_balances.iter().sum());
+            let balance_sum: f32 = token_balances.iter().sum();
+            WalletBalance::get(&app).set_balance(format!("{:.2}", balance_sum).parse::<f32>().unwrap());
 
             let the_model : Rc<VecModel<SlintToken>> = Rc::new(VecModel::from(my_tokens));
             let the_model_rc = ModelRc::from(the_model.clone());

@@ -128,7 +128,6 @@ impl WalletToken {
             owner: account_info.get("owner").unwrap().to_string(),
             token_amount_int: token_amount as f32,
             token_amount_string: account_info.get("tokenAmount").unwrap().get("uiAmountString").unwrap().as_str().unwrap(),
-            // token_amount_formatted: format_token_amount(token_amount),
         }
     }
 
