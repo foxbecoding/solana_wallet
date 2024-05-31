@@ -97,7 +97,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         name: SharedString::from(metadata.name),
                         owner: SharedString::from(parsed_account_info.owner),
                         symbol: SharedString::from(token_symbol),
-                        price: format!("{:.6}",price_data.price_as_f32()).parse::<f32>().unwrap(),
+                        price: price_data.price_formatted(),
                         balance: token_balance
                     };
                     my_tokens.push(slint_token);
