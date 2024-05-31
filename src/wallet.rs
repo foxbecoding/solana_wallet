@@ -96,7 +96,6 @@ pub struct ParsedAccountInfo<'a> {
     pub owner: String,
     pub token_amount_int: f32,
     pub token_amount_string: &'a str,
-    // pub token_amount_formatted: String,
 }
 
 impl ParsedAccountInfo<'_>  {
