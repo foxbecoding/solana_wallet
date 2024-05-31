@@ -16,6 +16,10 @@ impl PriceData {
     pub fn price_as_f32(&self) -> f32 {
         self.price as f32
     }
+    pub fn price_formatted(&self) -> f32 {
+        let price = self.price_as_f32();
+        format!("{:.6}", price).parse::<f32>().unwrap()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
